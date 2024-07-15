@@ -69,7 +69,8 @@ class _TemperatureConverterScreenState extends State<TemperatureConverterScreen>
 
     setState(() {
       _convertedValue = result.toStringAsFixed(2);
-      _history.add(
+      _history.insert(
+          0,
           '$_selectedConversion: ${inputTemp.toStringAsFixed(1)} => $_convertedValue');
       _tempController.clear();
     });
@@ -107,67 +108,69 @@ class _TemperatureConverterScreenState extends State<TemperatureConverterScreen>
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: _tempController,
-              decoration: InputDecoration(
-                labelText: 'Enter temperature',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: RadioListTile<String>(
-                    title: Text('Fahrenheit to Celsius'),
-                    value: 'F to C',
-                    groupValue: _selectedConversion,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedConversion = value!;
-                      });
-                    },
-                  ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                controller: _tempController,
+                decoration: InputDecoration(
+                  labelText: 'Enter temperature',
+                  border: OutlineInputBorder(),
                 ),
-                Expanded(
-                  child: RadioListTile<String>(
-                    title: Text('Celsius to Fahrenheit'),
-                    value: 'C to F',
-                    groupValue: _selectedConversion,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedConversion = value!;
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            ElevatedButton(
-              onPressed: _convertTemperature,
-              child: Text('Convert'),
-            ),
-            SizedBox(height: 20),
-            FadeTransition(
-              opacity: _fadeAnimation,
-              child: Text(
-                'Converted Value: $_convertedValue',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                keyboardType: TextInputType.number,
               ),
-            ),
-            SizedBox(height: 20),
-            Text(
-              'Conversion History:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Expanded(
-              child: ListView.builder(
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: Text('Fahrenheit to Celsius'),
+                      value: 'F to C',
+                      groupValue: _selectedConversion,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedConversion = value!;
+                        });
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: RadioListTile<String>(
+                      title: Text('Celsius to Fahrenheit'),
+                      value: 'C to F',
+                      groupValue: _selectedConversion,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedConversion = value!;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              ElevatedButton(
+                onPressed: _convertTemperature,
+                child: Text('Convert'),
+              ),
+              SizedBox(height: 20),
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: Text(
+                  'Converted Value: $_convertedValue',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'Conversion History:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 itemCount: _history.length,
                 itemBuilder: (context, index) {
                   return ListTile(
@@ -176,8 +179,8 @@ class _TemperatureConverterScreenState extends State<TemperatureConverterScreen>
                   );
                 },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
